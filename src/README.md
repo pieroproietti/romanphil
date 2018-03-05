@@ -1,9 +1,22 @@
-# romanphil-import
+# romanphil
+Sito di ecommerce realizzato in wordpress, in versione docker.
+
+# Attenzione
+Non viene salvato su git l'intero sito, ma solo la customizzazione.
+
+Il database, viene creato nella cartella ./volumes/db, mentre il sorgente
+directory ./srv viene impostato come /var/www/html dei container.
+
+## docker
+* ``` ./bin/dup  --build ``` docker-compose up -d --build
+* ``` ./bin/ddown``` docker-compose down
+* ``` ./bin/dexec``` docker exec -it [mysql|php|ngnix] bash
+
 
 Account
 * user git thesi: pieroproietti
 
-# Versioni importazione
+# Versioni wp da utilizzare per l'importazione
 * [WordPress 4.7.9](https://woradpress.org/wordpress-4.7.9.zip)
 * [woocommerce  3.2.1](https://github.com/woocommerce/woocommerce/archive/3.2.1.zip)
 
@@ -13,7 +26,7 @@ Account
 * user: wordpress
 * pass: wordpress
 
-## nella macchina con php
+## Nella macchina con php
 chown -Rf www-data:www-data /var/www/html/
 
 
@@ -32,8 +45,6 @@ chown -Rf www-data:www-data /var/www/html/
 * theme: storefront
 é plugin: WooCommerce collapsing categories/ widget: wc-categories
 
-## Dati al 1° marzo 2018
-
 ## ngnix
 
 ```
@@ -43,3 +54,5 @@ location /wordpress/{
   try_files $uri $uri/ /wordpress/index.php?$args;
 }
 ```
+
+## Dati aggiornati al 1° marzo 2018
