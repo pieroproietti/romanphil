@@ -10,10 +10,8 @@ Account
 
 ## Database
 * dbname: wordress
-* user: wordpresshtml
-
+* user: wordpress
 * pass: wordpress
-* db-pulito: romanphil-wordpress-clean.sql
 
 ## nella macchina con php
 chown -Rf www-data:www-data /var/www/html/
