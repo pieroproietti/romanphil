@@ -32,7 +32,7 @@ services:
     expose:
       - 3306
     volumes:
-      - db:/var/lib/mysql
+      - ./volumes/db:/var/lib/mysql
     volumes_from:
       - php
     environment:
