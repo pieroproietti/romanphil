@@ -1,1 +1,0 @@
-mysql -uroot -p wordpress < romanphil-wordpress-clean.sql

@@ -1,12 +1,14 @@
 l<?php
+# Percorso di importazione immagini
+
 require '.auth.php';
+
 
 // Need to require these files
 if (!function_exists('media_handle_upload')) {
     require_once 'wp-admin'.'/includes/image.php';
     require_once 'wp-admin'.'/includes/file.php';
     require_once 'wp-admin'.'/includes/media.php';
-    //require_once '../wp-content/plugins/woocommerce/includes/wc-product-functions.php';
 }
 
 function addImage($productId, $urlImg, $description, $codice)
@@ -23,7 +25,7 @@ function addImage($productId, $urlImg, $description, $codice)
 
     $fileImg=postSlug("img-".$codice);
     $fileImg.=$fileExt;
-    $fileImgFullPath="/var/www/html/kiri-uploads/" . $fileImg;
+    $fileImgFullPath=PATH_IMPORT_IMAGES . $fileImg;
 
     $urlOriginal=$urlImg;
     $urlPath=dirname($urlImg);
@@ -36,22 +38,18 @@ function addImage($productId, $urlImg, $description, $codice)
 
     $len=strlen($basename);
     if (len<=0) {
-        if (copy($urlImg, $fileImgFullPath)) {
             $found= true;
 
-
-            $html = addMediaLibrary($productId, $fileImg, $description);
+            $html = addMediaLibrary($productId, $urlImg, $description);
             $images = get_attached_media('image', $productId);
             foreach ($images as $image) {
                 $thumbnailId=$image->ID;
                 break;
             }
-            array_map('unlink', glob('/var/www/html/kiri-uploads/*.*'));
-        //echo "productId =  $productId, thumbnailId= $thumbnailId, image: ".$fileImg." description: $description\n\r";
-        update_post_meta($productId, '_thumbnail_id', $image->ID);
-        // postInsertMetaRow($thumbnailId,'_wp_attachment_image_alt',$fileImg);
-        // postInsertMetaRow($thumbnailId,'_wp_attached_file','2016/11/'.$fileImg);
-        }
+            //echo "productId =  $productId, thumbnailId= $thumbnailId, image: ".$fileImg." description: $description\n\r";
+            update_post_meta($productId, '_thumbnail_id', $image->ID);
+            // postInsertMetaRow($thumbnailId,'_wp_attachment_image_alt',$fileImg);
+            // postInsertMetaRow($thumbnailId,'_wp_attached_file','2016/11/'.$fileImg);
     } else {
         echo "ERRORE nome file nullo! $urlOriginal\n";
         echo "basename=$basename\n";
@@ -78,26 +76,17 @@ function splitFilename($filename)
 
 function addMediaLibrary($productId, $filename, $description)
 {
-    $file = '/var/www/html/kiri-uploads/'.$filename;
-    if (!file_exists($file) || 0 === strlen(trim($filename))) {
-        error_log('The file you are attempting to upload, '.$file.', does not exist.');
-        return;
-    }
-    $uploads = wp_upload_dir();
-    $uploads_dir = $uploads['path'];
-    $uploads_url = $uploads['url'];
-
-    if (copy($file, trailingslashit($uploads_dir).$filename)) {
-        $url = trailingslashit($uploads_url).$filename;
+    // TEST
+    $url=$filename;
+    $file = PATH_IMPORT_IMAGES.$filename;
+    echo "FILE_IMG: $file\n";
+        echo "URL: $url \n";
         $html = media_sideload_image($url, $productId, $description);
         if (is_wp_error($html)) {
             error_log(print_r($productId, true));
-            return "Errore!!!\m";
+            echo "ERRORE\n ";
+            return "\nErrore!!!\n";
         } else {
-            echo $html . "\n";
+            echo "HTML:  $html\n";
         }
-    } else {
-        echo "\nNON RIESCO A COPIARE $file\n";
-    };
-    return $html;
 }

@@ -63,26 +63,26 @@ function getProducts($categoryPath, $categoryId, $url)
           $imgTitle = preg_replace('/[^(\x20-\x7F)]*/','', $imgAlt);
 
           echo "--------------------------------------\n";
-          echo "URL:". $site.$url ."\n";
-          echo "CATEGORY PATH: $categoryPath";
-          echo "CATEGORY_ID: $categoryId \n" ;
-          echo "ID_PRODOTTO: $idProdotto \n";
-          echo "SKU: $sku \n";
-          echo "TITLE: $title \n";
-          echo "CONTENT: $content \n";
-          echo "CATALOGO: $catalogo \n";
-          echo "PRICE: $price \n";
-          echo "IMG_SRC: $imgSrc \n";
-          echo "IMG_ALT: $imgAlt \n";
-          echo "IMG_TITLE: $imgTitle \n";
+          // echo "URL:". $site.$url ."\n";
+          // echo "CATEGORY PATH: $categoryPath";
+          // echo "CATEGORY_ID: $categoryId \n" ;
+          // echo "ID_PRODOTTO: $idProdotto \n";
+          // echo "SKU: $sku \n";
+          // echo "TITLE: $title \n";
+          // echo "CONTENT: $content \n";
+          // echo "CATALOGO: $catalogo \n";
+          // echo "PRICE: $price \n";
+          // echo "IMG_SRC: $imgSrc \n";
+          // echo "IMG_ALT: $imgAlt \n";
+          // echo "IMG_TITLE: $imgTitle \n";
           echo "--------------------------------------\n";
 
 
           echo "Inserisco post\n";
           $postId=postInsert($title, $content, $excerpt);
-          echo "Inserisco postmeta\n";
+          echo "Inserisco postmeta $postId\n";
           postInsertMeta($postId, $sku, $price);
-          echo "Inserisco post image\n";
+          echo "Inserisco post image $postId\n";
           addImage($postId, $imgSrc, $imgAlt,$codice);
           wp_set_object_terms( $postId, intval($categoryId), 'product_cat' );
 
@@ -172,8 +172,8 @@ function postInsert($title, $content, $excerpt)
         comment_count) VALUES
       ('.
         $pdo->quote($author).', '.
-        $pdo->quote($postDate).', '.
-        $pdo->quote($postDateGmt).', '.
+        $postDate.', '.
+        $postDateGmt.', '.
         $pdo->quote($postContent).', '.
         $pdo->quote($postTitle).', '.
         $pdo->quote($postExcerpt).', '.
@@ -184,8 +184,8 @@ function postInsert($title, $content, $excerpt)
         $pdo->quote($postName).', '.
         $pdo->quote($toPing).', '.
         $pdo->quote($pinged).', '.
-        $pdo->quote($postModified).', '.
-        $pdo->quote($postModifiedGmt).', '.
+        $postModified.', '.
+        $postModifiedGmt.', '.
         $pdo->quote($postContentFiltered).', '.
         $pdo->quote($postParent).', '.
         $pdo->quote($guid).', '.
@@ -197,6 +197,7 @@ function postInsert($title, $content, $excerpt)
     $sql .= "SELECT LAST_INSERT_ID();";
     $stml = $pdo->prepare($sql);
     $stml->execute();
+    //echo $sql;
 
     //$stml = $pdo->prepare('SELECT LAST_INSERT_ID();');
     //$stml->execute();
