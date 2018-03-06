@@ -3,9 +3,9 @@ require '.auth.php';
 
 // Need to require these files
 if (!function_exists('media_handle_upload')) {
-    require_once '../wordpress/wp-admin'.'/includes/image.php';
-    require_once '../wordpress/wp-admin'.'/includes/file.php';
-    require_once '../wordpress/wp-admin'.'/includes/media.php';
+    require_once 'wp-admin'.'/includes/image.php';
+    require_once 'wp-admin'.'/includes/file.php';
+    require_once 'wp-admin'.'/includes/media.php';
     //require_once '../wp-content/plugins/woocommerce/includes/wc-product-functions.php';
 }
 

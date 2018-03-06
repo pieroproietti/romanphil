@@ -6,8 +6,10 @@ Importa una categoria per volta,
 quindi ogni prodotto della idCategoria
 */
 
+set_include_path('/var/www/html/wordpress');
 
-require '../wordpress/wp-blog-header.php';
+
+require('wp-blog-header.php');
 require('simple_html_dom.php');
 require '.auth.php';
 require 'postSlug.php';
