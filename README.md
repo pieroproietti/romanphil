@@ -12,6 +12,11 @@ directory ./srv viene impostato come /var/www/html dei container.
 * ``` ./bin/ddown``` docker-compose down
 * ``` ./bin/dexec``` docker exec -it [mysql|php|ngnix] bash
 
+I container sono quattro:
+* mysql
++ php
+* ngnix
+* phpmyadmin
 
 Account
 * user git thesi: pieroproietti
@@ -54,5 +59,3 @@ location /wordpress/{
   try_files $uri $uri/ /wordpress/index.php?$args;
 }
 ```
-
-## Dati aggiornati al 1° marzo 2018
