@@ -6,7 +6,7 @@ function getCategories($html)
 
     foreach ($categories as $category) {
         $currentName=rtrim(ltrim(strtolower(strip_tags($category->plaintext))));
-        echo $currentName . "\n";
+        //echo $currentName . "\n";
         $url=$category->href;
         switch ($category->href) {
         case '#':

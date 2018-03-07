@@ -67,8 +67,8 @@ function getProducts($categoryPath, $categoryId, $url)
             $postId=postInsert($title, $content, $excerpt);
             postInsertMeta($postId, $sku, $price);
             if (!addImage($postId, $imgSrc, $imgAlt, $codice)){
-              echo "TITLE: $title \n";
-              echo "IMG_SRC: $imgSrc \n";
+              echo "<li><a href='http://127.0.0.1/wordpress/wp-admin/post.php?post=$postId&action=edit' target='_blank'>$postId</a> ";
+              echo "<a href='$imgSrc' target='_blank'>image</a></li>";
             };
             wp_set_object_terms($postId, intval($categoryId), 'product_cat');
         }
