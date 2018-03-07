@@ -5,6 +5,7 @@ MAIN per importazione
 Importa una categoria per volta,
 quindi ogni prodotto della idCategoria
 */
+ini_set("memory_limit","32G");
 
 set_include_path('/var/www/html/wordpress');
 
