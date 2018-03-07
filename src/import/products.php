@@ -1,17 +1,4 @@
 <?php
-function getPages($categoryPath, $categoryId, $url){
-  $site='http://www.romanphil.com/';
-  $url=substr($url,0, strlen($url)-1);
-  for ($i=1; $i< 10 ; $i++) {
-    $url=$url . $i;
-    //echo "URL: $url\n";
-    if (!getProducts($categoryPath, $categoryId, $url)){
-      break;
-    }else{
-      $url=substr($url,0, strlen($url)-1);
-    }
-  }
-}
 /*
 URL: Lista_Prodotti.asp?idCategoria=432&style=2&page=2
 PHP Warning:  file_get_contents(): php_network_getaddresses: getaddrinfo failed: Name or service not known in /var/www/html/romanphil-v2/roman-import/simple_html_dom.php on line 75
@@ -21,9 +8,24 @@ Stack trace:
 #0 /var/www/html/romanphil-v2/roman-import/products.php(8): getProducts('/Numismatica/2 ...', '285', 'Lista_Prodotti....')
 */
 
+function getPages($categoryPath, $categoryId, $url)
+{
+    $site='http://www.romanphil.com/';
+    $url=substr($url, 0, strlen($url)-1);
+    for ($i=1; $i< 10 ; $i++) {
+        $url=$url . $i;
+        //echo "URL: $url\n";
+        if (!getProducts($categoryPath, $categoryId, $url)) {
+            break;
+        } else {
+            $url=substr($url, 0, strlen($url)-1);
+        }
+    }
+}
+
 function getProducts($categoryPath, $categoryId, $url)
 {
-  $isFound=false;
+    $isFound=false;
     $site='http://www.romanphil.com/';
     $html = file_get_html($site.$url);
 
@@ -31,63 +33,58 @@ function getProducts($categoryPath, $categoryId, $url)
     //$html = file_get_html("http://www.romanphil.com/Lista_Prodotti.asp?idCategoria=528&style=2&page=1");
 
     if ($html) {
-      $products = $html->find('form');
-      foreach ($products as $product) {
-        $isFound=true;
+        $products = $html->find('form');
+        foreach ($products as $product) {
+            $isFound=true;
 
-          $sku =$product->find('[name*=idProdotto]',0)->value;
-          $codice= cleanString($product->find('p', 0)->plaintext);
-          $title= cleanString($product->find('p', 1)->plaintext);
-          $descrizione= cleanString($product->find('p', 2)->plaintext);
-          $catalogo = estraiCatalogo($product->plaintext);
-          $price=estraiPrice($product);
+            $sku =$product->find('[name*=idProdotto]', 0)->value;
+            $codice= cleanString($product->find('p', 0)->plaintext);
+            $title= cleanString($product->find('p', 1)->plaintext);
+            $descrizione= cleanString($product->find('p', 2)->plaintext);
+            $catalogo = estraiCatalogo($product->plaintext);
+            $price=estraiPrice($product);
 
-          $excerpt="<em><a href='$site$url'>".$codice. "</a></em><br/>";
-          //$excerpt="<b>$codice</b><br/>";
-          $excerpt.=$descrizione."<br/><br/>";
-          $excerpt.=$catalogo;
+            $excerpt="<em><a href='$site$url'>".$codice. "</a></em><br/>";
+            //$excerpt="<b>$codice</b><br/>";
+            $excerpt.=$descrizione."<br/><br/>";
+            $excerpt.=$catalogo;
 
-          $content=$descrizione;
+            $content=$descrizione;
 
-          foreach ($product->find('img') as $img) {
-              $check="gestione/img/prodotti/big/";
-              if (substr($img->src, 0, 26)==$check) {
-                $imgSrc=$site.$img->src;
-                $imgAlt=cleanString(strip_tags($img->alt));
-                $imgTitle=cleanString(strip_tags($img->title));
-              }
-          }
-
-
-          $imgAlt = preg_replace('/[^(\x20-\x7F)]*/','', $imgAlt);
-          $imgTitle = preg_replace('/[^(\x20-\x7F)]*/','', $imgAlt);
-
-          echo "--------------------------------------\n";
-          // echo "URL:". $site.$url ."\n";
-          // echo "CATEGORY PATH: $categoryPath";
-          // echo "CATEGORY_ID: $categoryId \n" ;
-          // echo "ID_PRODOTTO: $idProdotto \n";
-          // echo "SKU: $sku \n";
-          // echo "TITLE: $title \n";
-          // echo "CONTENT: $content \n";
-          // echo "CATALOGO: $catalogo \n";
-          // echo "PRICE: $price \n";
-          // echo "IMG_SRC: $imgSrc \n";
-          // echo "IMG_ALT: $imgAlt \n";
-          // echo "IMG_TITLE: $imgTitle \n";
-          echo "--------------------------------------\n";
+            foreach ($product->find('img') as $img) {
+                $check="gestione/img/prodotti/big/";
+                if (substr($img->src, 0, 26)==$check) {
+                    $imgSrc=$site.$img->src;
+                    $imgAlt=cleanString(strip_tags($img->alt));
+                    $imgTitle=cleanString(strip_tags($img->title));
+                }
+            }
 
 
-          echo "Inserisco post\n";
-          $postId=postInsert($title, $content, $excerpt);
-          echo "Inserisco postmeta $postId\n";
-          postInsertMeta($postId, $sku, $price);
-          echo "Inserisco post image $postId\n";
-          addImage($postId, $imgSrc, $imgAlt,$codice);
-          wp_set_object_terms( $postId, intval($categoryId), 'product_cat' );
+            $imgAlt = preg_replace('/[^(\x20-\x7F)]*/', '', $imgAlt);
+            $imgTitle = preg_replace('/[^(\x20-\x7F)]*/', '', $imgAlt);
 
-
-      }
+            echo "--------------------------------------\n";
+            echo "URL:". $site.$url ."\n";
+            echo "CATEGORY PATH: $categoryPath\n";
+            echo "CATEGORY_ID: $categoryId \n" ;
+            echo "ID_PRODOTTO: $idProdotto \n";
+            echo "SKU: $sku \n";
+            echo "TITLE: $title \n";
+            // echo "CONTENT: $content \n";
+            echo "CATALOGO: $catalogo \n";
+            echo "PRICE: $price \n";
+            echo "IMG_SRC: $imgSrc \n";
+            // echo "IMG_ALT: $imgAlt \n";
+            // echo "IMG_TITLE: $imgTitle \n";
+            echo "--------------------------------------\n";
+            $postId=postInsert($title, $content, $excerpt);
+            // echo "Inserisco postmeta $postId\n";
+            postInsertMeta($postId, $sku, $price);
+            // echo "Inserisco post image $postId\n";
+            addImage($postId, $imgSrc, $imgAlt, $codice);
+            wp_set_object_terms($postId, intval($categoryId), 'product_cat');
+        }
     }
     return $isFound;
 }
@@ -99,15 +96,15 @@ function cleanString($string)
 
 function estraiPrice($product)
 {
-  $price =$product->find('td[align="right"]',0)->outertext;
-  $htmlPrice=str_get_html($price);
-  $price =$htmlPrice->find('b',0)->plaintext;
-  $pos=strrpos($price,"€");
-  $price=substr($price,0,$pos-1);
-  $price= str_replace('.','', $price);
-  $price= str_replace(',','.', $price);
+    $price =$product->find('td[align="right"]', 0)->outertext;
+    $htmlPrice=str_get_html($price);
+    $price =$htmlPrice->find('b', 0)->plaintext;
+    $pos=strrpos($price, "€");
+    $price=substr($price, 0, $pos-1);
+    $price= str_replace('.', '', $price);
+    $price= str_replace(',', '.', $price);
 
-  return $price;
+    return $price;
 }
 
 function estraiCatalogo($text)
@@ -124,7 +121,7 @@ function postInsert($title, $content, $excerpt)
 
     $author = 1;
     $postDate = 'NOW()';
-    $postDateGmt = '(NOW() - INTERVAL 2 HOUR)';
+    $postDateGmt = 'NOW()';
     $postContent = $content;
     $postTitle = $title;
     $postExcerpt = $excerpt;
@@ -137,7 +134,7 @@ function postInsert($title, $content, $excerpt)
     $toPing = '';
     $pinged = '';
     $postModified = 'NOW()';
-    $postModifiedGmt = '(NOW() - INTERVAL 2 HOUR)';
+    $postModifiedGmt = 'NOW()';
     $postContentFiltered = '';
     $postParent = 0;
     $guid = '';
@@ -218,8 +215,8 @@ function postInsertMeta($postId, $sku, $price)
 {
     global $pdo;
 
-    if($price=="0"){
-      $price="";
+    if ($price=="0") {
+        $price="";
     }
 
     $backorders = '0';
@@ -234,7 +231,7 @@ function postInsertMeta($postId, $sku, $price)
     $price = $price;
     $productAttributess = '0';
     $productImageGallery = '';
-    $productVersion = '2.6.6';
+    $productVersion = '3.3.3'; //2.6.6
     $purchaseNote = '';
     $regularPrice = $price;
     $salePrice = '';
@@ -306,18 +303,5 @@ function postInsertMetaRow($post_id, $meta_key, $meta_value)
 
     $stml = $pdo->prepare($sql);
     $stml->execute();
-  //echo $sql . "\n\r";
-}
-
-function findMarchio($marchioId)
-{
-    global $pdo;
-
-    $sql = "SELECT marchio FROM linee WHERE marchio_id='$marchioId'";
-    $stml = $pdo->prepare($sql);
-    $stml->execute();
-    $row = $stml->fetch(PDO::FETCH_ASSOC);
-    $marchio = strtolower($row['marchio']);
-
-    return $marchio;
+    //echo $sql . "\n\r";
 }

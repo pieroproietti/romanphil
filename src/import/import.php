@@ -4,11 +4,13 @@ MAIN per importazione
 
 Importa una categoria per volta,
 quindi ogni prodotto della idCategoria
+
+Testa con: wordpress 4.9.4 e woocommerce 3.2.6
+Attenzione: con woocommerce 3.3.3 NON carica le categorie
+
 */
-ini_set("memory_limit","32G");
-
+ini_set("memory_limit", "32G");
 set_include_path('/var/www/html/wordpress');
-
 
 require('wp-blog-header.php');
 require('simple_html_dom.php');

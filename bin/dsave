@@ -1,0 +1,2 @@
+sudo mv ./volumes/db ./clean
+sudo mv ./src/wordpress ./clean

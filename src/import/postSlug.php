@@ -28,7 +28,7 @@ function postSlug($var)
     $len=strlen($var);
     $righMinus=strrpos($var, "-");
     if ($righMinus==$len-1) {
-        $var=substr($var, 0,$righMinus );
+        $var=substr($var, 0, $righMinus);
     }
     return $var;
 }

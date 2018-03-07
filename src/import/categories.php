@@ -1,35 +1,34 @@
 <?php
+
+// ATTENZIONE: Le categorie ed i tag sono di woocommerce
+
 //http://www.romanphil.com/Lista_Prodotti.asp?idCategoria=528&style=2&page=1
 function getCategories($html)
 {
     $categories=$html->find('a');
+
     foreach ($categories as $category) {
         $currentName=rtrim(ltrim(strtolower(strip_tags($category->plaintext))));
+        echo $currentName . "\n";
         $url=$category->href;
         switch ($category->href) {
         case '#':
           if ($currentName=="filatelia" || $currentName=="numismatica" || $currentName=="gadget" ||  $currentName=="materiali" || $currentName=="offerte" || $currentName=="novita'") {
               $rootCategoryName=ucwords($currentName);
-              $rootCategoryId=addCategory($rootCategoryName,0);
-          } else
-           {
+              $rootCategoryId=addCategory($rootCategoryName, 0);
+          } else {
               $subCategoryName=ucwords($currentName);
               $subCategoryId=addCategory($subCategoryName, $rootCategoryId);
           }
           break;
 
         default:
-          // punta ad una pagina
           if (substr($category->href, 0, 18)=="Lista_Prodotti.asp") {
               $categoryName=spacesRemove(ucwords($currentName));
               $categoryId=addCategory($categoryName, $subCategoryId);
-              $categoryPath=categoryPath($rootCategoryName,$subCategoryName,$categoryName);
+              $categoryPath=categoryPath($rootCategoryName, $subCategoryName, $categoryName);
 
               $categoryPath=trim($categoryPath);
-              //echo "Path: $categoryPath\n";
-              //echo "id: $categoryId\n";
-              //echo "URL: $url\n";
-              //echo "-----------------------\n";
               getPages($categoryPath, $categoryId, $url);
               break;
           }
@@ -37,29 +36,31 @@ function getCategories($html)
     }
 }
 
-function categoryPath($rootCategoryName,$subCategoryName,$categoryName){
-  $cp= "/";
-  $cp.=$rootCategoryName;
-  $cp.="/";
-  $cp.=$subCategoryName;
-  $cp.="/";
-  $cp.=$categoryName;
-  $cp.="\n";
-  return $cp;
+function categoryPath($rootCategoryName, $subCategoryName, $categoryName)
+{
+    $cp= "/";
+    $cp.=$rootCategoryName;
+    $cp.="/";
+    $cp.=$subCategoryName;
+    $cp.="/";
+    $cp.=$categoryName;
+    $cp.="\n";
+    return $cp;
 }
 
 function addCategory($name, $parent)
 {
-  $termId=0;
-  if($name<>""){
-    $order = '0';
-    $slug = postSlug($name);
-    $termId = addTerms($name, $parent);
-    addCategoryTermMeta($termId);
-    addCategoryTaxonomy($termId, $parent);
-  }
-  return $termId;
+    $termId=0;
+    if ($name<>"") {
+        $order = '0';
+        $slug = postSlug($name);
+        $termId = addTerms($name, $parent);
+        addCategoryTermMeta($termId);
+        addCategoryTaxonomy($termId, $parent);
+    }
+    return $termId;
 }
+
 function addTerms($name, $parent)
 {
     global $pdo;
@@ -87,6 +88,7 @@ function addTerms($name, $parent)
     $lastInsertId = $pdo->lastInsertId();
     return $lastInsertId;
 }
+
 function addCategoryTermMeta($termId)
 {
     global $pdo;
@@ -109,6 +111,7 @@ function addCategoryTermMeta($termId)
     $stml = $pdo->prepare($sql);
     $stml->execute();
 }
+
 function addCategorytaxonomy($termId, $parent)
 {
     global $pdo;
@@ -120,6 +123,7 @@ function addCategorytaxonomy($termId, $parent)
     $stml = $pdo->prepare($sql);
     $stml->execute();
 }
+
 function addTermRelationships()
 {
     global $pdo;

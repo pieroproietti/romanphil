@@ -1,4 +1,4 @@
 src/wordpress/
 volumes/
 sr/
-clean/
+./clean
