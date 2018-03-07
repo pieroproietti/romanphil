@@ -2,11 +2,11 @@
 /*
 MAIN per importazione
 
-Importa una categoria per volta,
-quindi ogni prodotto della idCategoria
+import->getCategories->getPages->getProducts
 
-Testa con: wordpress 4.9.4 e woocommerce 3.2.6
-Attenzione: con woocommerce 3.3.3 NON carica le categorie
+Testato con: wordpress 4.9.4 e woocommerce 3.2.6
+
+ATTENZIONE: con woocommerce 3.3.3 NON carica le categorie
 
 */
 ini_set("memory_limit", "32G");

@@ -10,33 +10,20 @@ if (!function_exists('media_handle_upload')) {
 
 function addImage($productId, $urlImg, $description, $codice)
 {
-    $found = false;
-
+    $inserted=true;
     $description=strtolower($description);
     $product=wc_get_product($productId);
 
-    $len=strlen($basename);
-    if (len<=0) {
-        $found= true;
-        $html = addMediaLibrary($productId, $urlImg, $description);
+    $html=media_sideload_image($urlImg, $productId, $description);
+    if (is_wp_error($html)) {
+        $inserted=false;
+    } else {
         $images = get_attached_media('image', $productId);
         foreach ($images as $image) {
             $thumbnailId=$image->ID;
             break;
         }
         update_post_meta($productId, '_thumbnail_id', $image->ID);
-    } else {
-        echo "ERRORE nome file nullo! $urlImg\n";
-        exit;
     }
-    return $found;
-}
-
-function addMediaLibrary($productId, $url, $description)
-{
-    $html = media_sideload_image($url, $productId, $description);
-    if (is_wp_error($html)) {
-        error_log(print_r($productId, true));
-        return "\nErrore!!!\n";
-    }
+    return $inserted;
 }

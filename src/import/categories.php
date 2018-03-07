@@ -1,8 +1,5 @@
 <?php
 
-// ATTENZIONE: Le categorie ed i tag sono di woocommerce
-
-//http://www.romanphil.com/Lista_Prodotti.asp?idCategoria=528&style=2&page=1
 function getCategories($html)
 {
     $categories=$html->find('a');
@@ -95,19 +92,16 @@ function addCategoryTermMeta($termId)
     $metaKey = 'order';
     $metaValue = '0';
     $sql = "INSERT INTO `wp_termmeta` (`term_id`, `meta_key`, `meta_value`) VALUES   ($termId, '$metaKey', '$metaValue');";
-    //echo $sql."\n\r";
     $stml = $pdo->prepare($sql);
     $stml->execute();
     $metaKey = 'display_type';
     $metaValue = '0';
     $sql = "INSERT INTO `wp_termmeta` (`term_id`, `meta_key`, `meta_value`) VALUES   ($termId, '$metaKey', '$metaValue');";
-    //echo $sql."\n\r";
     $stml = $pdo->prepare($sql);
     $stml->execute();
     $metaKey = 'thumbnail_id';
     $metaValue = '0';
     $sql = "INSERT INTO `wp_termmeta` (`term_id`, `meta_key`, `meta_value`) VALUES   ($termId, '$metaKey', '$metaValue');";
-    //echo $sql."\n\r";
     $stml = $pdo->prepare($sql);
     $stml->execute();
 }
@@ -119,7 +113,6 @@ function addCategorytaxonomy($termId, $parent)
     $taxonomy = 'product_cat';
     $description = '';
     $sql = "INSERT INTO `wp_term_taxonomy` (`term_id`, `taxonomy`, `description`, `parent`, `count`) VALUES ($termId, '$taxonomy', '$description', $parent, $count);";
-    //echo $sql."\n\r";
     $stml = $pdo->prepare($sql);
     $stml->execute();
 }
@@ -128,7 +121,6 @@ function addTermRelationships()
 {
     global $pdo;
     $sql = "INSERT INTO `wp_term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($objectId, $termTaxonomyId, $order);";
-    //echo $sql."\n\r";
 }
 /*
 wp_termmeta

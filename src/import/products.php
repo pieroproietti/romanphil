@@ -1,12 +1,4 @@
 <?php
-/*
-URL: Lista_Prodotti.asp?idCategoria=432&style=2&page=2
-PHP Warning:  file_get_contents(): php_network_getaddresses: getaddrinfo failed: Name or service not known in /var/www/html/romanphil-v2/roman-import/simple_html_dom.php on line 75
-PHP Warning:  file_get_contents(http://www.romanphil.com/Lista_Prodotti.asp?idCategoria=432&style=2&page=2): failed to open stream: php_network_getaddresses: getaddrinfo failed: Name or service not known in /var/www/html/romanphil-v2/roman-import/simple_html_dom.php on line 75
-PHP Fatal error:  Uncaught Error: Call to a member function find() on boolean in /var/www/html/romanphil-v2/roman-import/products.php:18
-Stack trace:
-#0 /var/www/html/romanphil-v2/roman-import/products.php(8): getProducts('/Numismatica/2 ...', '285', 'Lista_Prodotti....')
-*/
 
 function getPages($categoryPath, $categoryId, $url)
 {
@@ -14,7 +6,6 @@ function getPages($categoryPath, $categoryId, $url)
     $url=substr($url, 0, strlen($url)-1);
     for ($i=1; $i< 10 ; $i++) {
         $url=$url . $i;
-        //echo "URL: $url\n";
         if (!getProducts($categoryPath, $categoryId, $url)) {
             break;
         } else {
@@ -29,9 +20,6 @@ function getProducts($categoryPath, $categoryId, $url)
     $site='http://www.romanphil.com/';
     $html = file_get_html($site.$url);
 
-    // Prodotti con ° in title
-    //$html = file_get_html("http://www.romanphil.com/Lista_Prodotti.asp?idCategoria=528&style=2&page=1");
-
     if ($html) {
         $products = $html->find('form');
         foreach ($products as $product) {
@@ -43,12 +31,10 @@ function getProducts($categoryPath, $categoryId, $url)
             $descrizione= cleanString($product->find('p', 2)->plaintext);
             $catalogo = estraiCatalogo($product->plaintext);
             $price=estraiPrice($product);
-
             $excerpt="<em><a href='$site$url'>".$codice. "</a></em><br/>";
             //$excerpt="<b>$codice</b><br/>";
             $excerpt.=$descrizione."<br/><br/>";
             $excerpt.=$catalogo;
-
             $content=$descrizione;
 
             foreach ($product->find('img') as $img) {
@@ -64,25 +50,26 @@ function getProducts($categoryPath, $categoryId, $url)
             $imgAlt = preg_replace('/[^(\x20-\x7F)]*/', '', $imgAlt);
             $imgTitle = preg_replace('/[^(\x20-\x7F)]*/', '', $imgAlt);
 
-            echo "--------------------------------------\n";
-            echo "URL:". $site.$url ."\n";
-            echo "CATEGORY PATH: $categoryPath\n";
-            echo "CATEGORY_ID: $categoryId \n" ;
-            echo "ID_PRODOTTO: $idProdotto \n";
-            echo "SKU: $sku \n";
-            echo "TITLE: $title \n";
+            //echo "--------------------------------------\n";
+            //echo "URL:". $site.$url ."\n";
+            //echo "CATEGORY PATH: $categoryPath\n";
+            //echo "CATEGORY_ID: $categoryId \n" ;
+            //echo "ID_PRODOTTO: $idProdotto \n";
+            //echo "SKU: $sku \n";
+            //echo "TITLE: $title \n";
             // echo "CONTENT: $content \n";
-            echo "CATALOGO: $catalogo \n";
-            echo "PRICE: $price \n";
-            echo "IMG_SRC: $imgSrc \n";
+            //echo "CATALOGO: $catalogo \n";
+            //echo "PRICE: $price \n";
+            //echo "IMG_SRC: $imgSrc \n";
             // echo "IMG_ALT: $imgAlt \n";
             // echo "IMG_TITLE: $imgTitle \n";
-            echo "--------------------------------------\n";
+            //echo "--------------------------------------\n";
             $postId=postInsert($title, $content, $excerpt);
-            // echo "Inserisco postmeta $postId\n";
             postInsertMeta($postId, $sku, $price);
-            // echo "Inserisco post image $postId\n";
-            addImage($postId, $imgSrc, $imgAlt, $codice);
+            if (!addImage($postId, $imgSrc, $imgAlt, $codice)){
+              echo "TITLE: $title \n";
+              echo "IMG_SRC: $imgSrc \n";
+            };
             wp_set_object_terms($postId, intval($categoryId), 'product_cat');
         }
     }
@@ -93,6 +80,15 @@ function cleanString($string)
 {
     return rtrim(ltrim(spacesRemove(strip_tags($string))));
 }
+
+/*
+function cleanString($input) {
+  $input=rtrim(ltrim(spacesRemove(strip_tags($input))));
+	$input = trim(preg_replace('/\s*\([^)]*\)/', '', $input));
+	$input = preg_replace('/[^a-zA-Z0-9]/s', '', $input);
+	return strtolower($input);
+}
+*/
 
 function estraiPrice($product)
 {
@@ -194,20 +190,14 @@ function postInsert($title, $content, $excerpt)
     $sql .= "SELECT LAST_INSERT_ID();";
     $stml = $pdo->prepare($sql);
     $stml->execute();
-    //echo $sql;
 
-    //$stml = $pdo->prepare('SELECT LAST_INSERT_ID();');
-    //$stml->execute();
     $last_inserted = $pdo->lastInsertId();
-
     $guid = get_site_url()."?post_type=product&#038;p=$last_inserted";
-
     $sql = "UPDATE wp_posts
               SET guid='$guid'
               WHERE id=$last_inserted";
     $stml = $pdo->prepare($sql);
     $stml->execute();
-
     return $last_inserted;
 }
 
@@ -303,5 +293,4 @@ function postInsertMetaRow($post_id, $meta_key, $meta_value)
 
     $stml = $pdo->prepare($sql);
     $stml->execute();
-    //echo $sql . "\n\r";
 }
