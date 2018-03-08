@@ -1,4 +1,3 @@
-pause "attenzione"
 sudo rm ./volumes/db -rf
 sudo rm ./src/wordpress -rf
 sudo curl -o ./src/wordpress-4.9.4-it_IT.tar.gz  https://it.wordpress.org/wordpress-4.9.4-it_IT.tar.gz

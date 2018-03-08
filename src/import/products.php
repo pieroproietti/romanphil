@@ -66,9 +66,10 @@ function getProducts($categoryPath, $categoryId, $url)
             //echo "--------------------------------------\n";
             $postId=postInsert($title, $content, $excerpt);
             postInsertMeta($postId, $sku, $price);
-            if (!addImage($postId, $imgSrc, $imgAlt, $codice)){
-              echo "<li><a href='http://127.0.0.1/wordpress/wp-admin/post.php?post=$postId&action=edit' target='_blank'>$postId</a> ";
-              echo "<a href='$imgSrc' target='_blank'>image</a></li>";
+            if (!addImage($imgSrc, $postId, $imgAlt)){
+              //echo "<li><a href='http://127.0.0.1/wordpress/wp-admin/post.php?post=$postId&action=edit' target='_blank'>$postId</a> ";
+              //echo "<a href='$imgSrc' target='_blank'>image</a></li>";
+              echo "productId: $postId NON inserito!\n";
             };
             wp_set_object_terms($postId, intval($categoryId), 'product_cat');
         }
