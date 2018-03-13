@@ -36,9 +36,8 @@ function addImage($urlImg, $productId, $description)
             }
             update_post_meta($productId, '_thumbnail_id', $image->ID);
         }
-        echo "Post: [$productId]\n";
-        echo "Url:  [$urlName]\n";
-        echo "Desc: [$description]\n";
+        // echo "Post: [$productId]\n";
+        // echo "Url:  [$urlName]\n";
         //print_r($html);
     }
     return $inserted;

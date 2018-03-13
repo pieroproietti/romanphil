@@ -1,4 +1,5 @@
-FROM php:5.6.33-fpm-jessie
+FROM php:7-fpm-stretch
+#FROM php:5.6.33-fpm-jessie
 
 RUN apt-get update && apt-get install -y libpng-dev libcurl4-gnutls-dev
 
